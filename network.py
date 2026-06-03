@@ -121,10 +121,10 @@ class Network():
 			gradient.append(g)
 		return gradient
 
-	def descent(self, gradient, rate=1e-3):
+	def descent(self, gradient):
 		for layer, g in zip(self.layers, gradient):
-			layer.weights -= g.weights*rate
-			layer.biases -= g.biases*rate
+			layer.weights -= g.weights*self.lr
+			layer.biases -= g.biases*self.lr
 
 	def mutate(self, diversity=.1):
 		net = Network(*self.design)
