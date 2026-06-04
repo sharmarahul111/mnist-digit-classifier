@@ -8,9 +8,11 @@ test_data = test_set()
 inputs = test_data[:, 1:]/255
 outputs = test_data[:,0]
 
-def test_accuracy(net):
-
-	accur = accuracy(net, inputs, outputs)
+def test_accuracy(net, inps=None, outps=None):
+	if inps is not None and outps is not None:
+		accur = accuracy(net, inps, outps)
+	else:
+		accur = accuracy(net, inputs, outputs)
 	return accur
 
 if __name__ == "__main__":
