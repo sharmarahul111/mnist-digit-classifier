@@ -10,7 +10,8 @@ class Network():
 		self.layers = []
 		self.lr = lr
 		for i in range(1,len(args)):
-			weights = np.random.randn(args[i-1], args[i])*.5
+			# weights = np.random.randn(args[i-1], args[i])*.5
+			weights = np.random.randn(args[i-1], args[i])*np.sqrt(2/ args[i-1])
 			biases = np.zeros(args[i])
 			self.layers.append(Layer(weights, biases))
 	
@@ -42,6 +43,9 @@ class Network():
 	def sigmoid(self, x):
 		return 1./(1+np.exp(-x))
 
+	def reLU(self, x):
+		return np.maximum(0,x)
+
 	def tanh(self, x):
 		return np.tanh(x)
 
@@ -49,18 +53,20 @@ class Network():
 		activation = inp
 		for i in range(len(self.layers)-1):
 			activation = activation @ self.layers[i].weights + self.layers[i].biases
-			activation = self.sigmoid(activation)
+			# activation = self.sigmoid(activation)
+			activation = self.reLU(activation)
 		activation = activation @ self.layers[-1].weights + self.layers[-1].biases
 		activation = self.sigmoid(activation)
 		return activation
 
 	def backprop(self, inputs, expected):
+		zs = []
 		activations = [inputs]
 		activation = inputs
-		# pre_activations = []
 		for i in range(len(self.layers)-1):
-			activation = activation @ self.layers[i].weights + self.layers[i].biases
-			activation = self.sigmoid(activation)
+			z = activation @ self.layers[i].weights + self.layers[i].biases
+			zs.append(z)
+			activation = self.reLU(z)
 			activations.append(activation)
 		# last layer may decide to use different activation function
 		activation = activation @ self.layers[-1].weights + self.layers[-1].biases
@@ -72,7 +78,9 @@ class Network():
 		delta = (output - expected) * output * (1-output)
 		deltas = [delta]
 		for i in range(len(self.layers)-2, -1, -1):
-			delta = (delta @ self.layers[i+1].weights.T) * activations[i+1] * (1 - activations[i+1])
+			# delta = (delta @ self.layers[i+1].weights.T) * activations[i+1] * (1 - activations[i+1])
+			relu_grad = (zs[i] > 0).astype(float)
+			delta = (delta @ self.layers[i+1].weights.T) * relu_grad
 			deltas.append(delta)
 		deltas.reverse()
 
