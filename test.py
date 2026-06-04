@@ -3,6 +3,7 @@ from network import Network
 from utils import *
 
 test_data = test_set()
+# test_data = train_set()[:500]
 # load the testing set
 inputs = test_data[:, 1:]/255
 outputs = test_data[:,0]
