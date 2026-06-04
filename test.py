@@ -2,11 +2,12 @@ import numpy as np
 from network import Network
 from utils import *
 
+test_data = test_set()
+# load the testing set
+inputs = test_data[:, 1:]/255
+outputs = test_data[:,0]
+
 def test_accuracy(net):
-	# load the testing set
-	test_data = test_set()
-	inputs = test_data[:, 1:]/255
-	outputs = test_data[:,0]
 
 	accur = accuracy(net, inputs, outputs)
 	return accur
